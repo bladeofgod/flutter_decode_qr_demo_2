@@ -32,7 +32,7 @@ public class NativeActivity extends FlutterActivity {
         model =(ImageModel) getIntent().getBundleExtra("data").getSerializable(ImageModel.class.getSimpleName());
 
         Bitmap bitmap = DecodeQRCodeUtil.getSingleton(this)
-                .loadUint8ListData(model.getBytesList(),model.getHeight(),model.getWidth()
+                .loadUint8ListData(model.getBytesList(),model.getHeight(),model.getWidth(),model.ratio
                         ,model.getImageMean(),model.getImageStd(),model.getRotation())
                 .getBitmapFromList();
 

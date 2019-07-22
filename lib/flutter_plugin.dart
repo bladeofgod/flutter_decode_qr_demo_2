@@ -15,6 +15,7 @@ class FlutterPlugin{
     @required List<Uint8List> bytesList
     ,int width = 720,
     int height = 1280 ,
+    double ratio = 0.56,
     double imageMean = 127.5,
     double imageStd = 127.5,int rotation: 90, // Android only
     int numResults = 5,
@@ -26,6 +27,7 @@ class FlutterPlugin{
            "bytesList": bytesList,
            "imageHeight": height,
            "imageWidth": width,
+           "ratio" : ratio,
            "imageMean": imageMean,
            "imageStd": imageStd,
            "rotation": rotation,

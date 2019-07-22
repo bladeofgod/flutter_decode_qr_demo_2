@@ -30,8 +30,9 @@ public class MainActivity extends FlutterActivity {
           int numResults = methodCall.argument("numResults");
           double threshold = methodCall.argument("threshold");
           boolean asynch = methodCall.argument("asynch");
+          double ratio = methodCall.argument("ratio");
           ImageModel imageModel = new ImageModel(
-                  bytesList,width,height,rotation,imageStd,imageMean,numResults,threshold,asynch
+                  bytesList,width,height,ratio,rotation,imageStd,imageMean,numResults,threshold,asynch
           );
           Intent intent = new Intent(MainActivity.this,NativeActivity.class);
           Bundle bundle = new Bundle();

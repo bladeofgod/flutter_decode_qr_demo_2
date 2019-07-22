@@ -50,15 +50,22 @@ public class DecodeQRCodeUtil {
 
     private List<byte[]> bytesList;
 
-    private int width,height;
-    private int rotation;
 
-    public DecodeQRCodeUtil loadUint8ListData(List<byte[]> bytesList, int imageHeight, int imageWidth,
+    //当直接从flutter 拿到宽高后，会导致 比例严重变形，尤其是高度
+    //这里多拿一个比例，对高度进行调整，来进行测试
+    private int width,height;
+    private int adjustHeight;
+    private int rotation;
+    private double ratio;
+
+    public DecodeQRCodeUtil loadUint8ListData(List<byte[]> bytesList, int imageHeight, int imageWidth,double ratio,
                                               double mean, double std, int rotation){
         //Log.i("bitmap size","byte size " + this.y.length);
         this.bytesList = bytesList;
         this.width = imageWidth;
         this.height = imageHeight;
+        this.ratio = ratio;
+        this.adjustHeight = (int)(Math.ceil(width / ratio));
         this.rotation = rotation;
 
         return this;
@@ -83,7 +90,7 @@ public class DecodeQRCodeUtil {
         Allocation bmData = renderScriptNV21ToRGBA888(
                 contextSoftReference.get(),
                 width,
-                height,
+                adjustHeight,
                 data);
         bmData.copyTo(bitmapRaw);
 

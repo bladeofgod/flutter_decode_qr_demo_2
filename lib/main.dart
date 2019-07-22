@@ -80,7 +80,7 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Container(
-              height: 400,
+              height: 600,
               child: CameraPreview(controller),
             ),
 
@@ -94,7 +94,7 @@ class _MyHomePageState extends State<MyHomePage> {
   bool isDetecting = false;
 
   void onCameraSelected(CameraDescription description)async{
-    controller = CameraController(description, ResolutionPreset.low);
+    controller = CameraController(description, ResolutionPreset.medium);
     controller.addListener((){
       if(mounted)setState(() {
 
@@ -122,9 +122,9 @@ class _MyHomePageState extends State<MyHomePage> {
                 bytesList: imageStream.planes.map((plane){
                   return plane.bytes;
                 }).toList()
-            ,width: imageStream.width,height: imageStream.height,numResults: 2);
+            ,width: imageStream.width,height: imageStream.height,numResults:
+            2,ratio:( imageStream.width / imageStream.height));
             controller.stopImageStream();
-
           });
         }
 

@@ -21,8 +21,8 @@
             android:layout_height="wrap_content" />
         <ImageView
             android:id="@+id/iv_result"
-            android:scaleType="fitXY"
-            android:layout_width="match_parent"
+            android:scaleType="centerCrop"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
     </LinearLayout>
 

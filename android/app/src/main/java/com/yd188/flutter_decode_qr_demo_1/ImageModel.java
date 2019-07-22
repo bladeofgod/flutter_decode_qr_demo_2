@@ -13,6 +13,7 @@ public class ImageModel implements Serializable {
     List<byte[]> bytesList ;
     int width ;
     int height ;
+    double ratio;
     int rotation ;
     double imageStd ;
     double imageMean ;
@@ -20,10 +21,12 @@ public class ImageModel implements Serializable {
     double threshold ;
     boolean asynch ;
 
-    public ImageModel(List<byte[]> bytesList, int width, int height, int rotation, double imageStd, double imageMean, int numResults, double threshold, boolean asynch) {
+
+    public ImageModel(List<byte[]> bytesList, int width, int height,double ratio, int rotation, double imageStd, double imageMean, int numResults, double threshold, boolean asynch) {
         this.bytesList = bytesList;
         this.width = width;
         this.height = height;
+        this.ratio = ratio;
         this.rotation = rotation;
         this.imageStd = imageStd;
         this.imageMean = imageMean;
