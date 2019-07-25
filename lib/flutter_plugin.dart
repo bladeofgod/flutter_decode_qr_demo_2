@@ -11,7 +11,7 @@ class FlutterPlugin{
 
   static const MethodChannel _channel = const MethodChannel("flutterplugin");
 
-  static Future<Null> jump({
+  static Future<String> jump({
     @required List<Uint8List> bytesList
     ,int width = 720,
     int height = 1280 ,

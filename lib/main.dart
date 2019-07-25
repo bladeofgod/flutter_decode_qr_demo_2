@@ -51,11 +51,12 @@ class _MyHomePageState extends State<MyHomePage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    try{
+    if(widget.cameras == null  || widget.cameras.length < 1){
+        print("No Cameara is found");
+    }else{
       onCameraSelected(widget.cameras[0]);
-    }catch(e){
-    print(e.toString());
-}
+    }
+
   }
 
   @override
@@ -80,7 +81,7 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Container(
-              height: 600,
+
               child: CameraPreview(controller),
             ),
 
@@ -106,29 +107,43 @@ class _MyHomePageState extends State<MyHomePage> {
 
 
     try{
-      await controller.initialize().then((_){
+      controller.initialize().then((_){
         if(!mounted){
           return;
         }
         setState(() {
 
         });
-      });
-      controller.startImageStream((imageStream){
-        if(! isDetecting){
-          Future.delayed(Duration(seconds: 3)).whenComplete((){
+
+        controller.startImageStream((imageStream){
+          if(! isDetecting){
             isDetecting = true;
+
+            //Lost connection to device. 可能的原因： channel 传输数据过大
             FlutterPlugin.jump(
                 bytesList: imageStream.planes.map((plane){
                   return plane.bytes;
                 }).toList()
-            ,width: imageStream.width,height: imageStream.height,numResults:
+                ,width: imageStream.width,height: imageStream.height,numResults:
             2,ratio:( imageStream.width / imageStream.height));
-            controller.stopImageStream();
-          });
-        }
+//              .then((result){
+//            if("1" == result){
+//              print("${result}");
+//              isDetecting = false;
+//            }
+//          });
+//            Future.delayed(new Duration(seconds: 3)).whenComplete((){
+//
+//
+//            });
+
+            //controller.stopImageStream();
+          }
+
+        });
 
       });
+
     }on CameraException catch(e){
       print(e.toString());
     }
