@@ -22,7 +22,7 @@ class FlutterPlugin{
     double threshold = 0.1,
     bool asynch = true})
   async{
-      await _channel.invokeMethod("jump",
+      return await _channel.invokeMethod("jump",
          {
            "bytesList": bytesList,
            "imageHeight": height,

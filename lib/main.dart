@@ -62,9 +62,9 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void dispose() {
     // TODO: implement dispose
+    controller?.dispose();
     super.dispose();
-    controller.stopImageStream();
-    controller.dispose();
+
   }
 
 
@@ -77,14 +77,9 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
       ),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+        child: Stack(
           children: <Widget>[
-            Container(
-
-              child: CameraPreview(controller),
-            ),
-
+            CameraPreview(controller),
           ],
         ),
       ),
@@ -94,38 +89,42 @@ class _MyHomePageState extends State<MyHomePage> {
 
   bool isDetecting = false;
 
-  void onCameraSelected(CameraDescription description)async{
+  void onCameraSelected(CameraDescription description){
     controller = CameraController(description, ResolutionPreset.medium);
-    controller.addListener((){
-      if(mounted)setState(() {
+//    controller.addListener((){
+//      if(mounted)setState(() {
+//
+//      });
+//      if(controller.value.hasError){
+//        print("camera error :${controller.value.errorDescription}");
+//      }
+//    });
+
+    controller.initialize().then((_){
+      if(!mounted){
+        return;
+      }
+      setState(() {
 
       });
-      if(controller.value.hasError){
-        print("camera error :${controller.value.errorDescription}");
-      }
-    });
 
+      controller.startImageStream((CameraImage imageStream){
+        if(! isDetecting){
+          isDetecting = true;
 
-    try{
-      controller.initialize().then((_){
-        if(!mounted){
-          return;
-        }
-        setState(() {
-
-        });
-
-        controller.startImageStream((imageStream){
-          if(! isDetecting){
-            isDetecting = true;
-
-            //Lost connection to device. 可能的原因： channel 传输数据过大
+          Future.delayed(Duration(seconds: 2)).then((_){
             FlutterPlugin.jump(
                 bytesList: imageStream.planes.map((plane){
                   return plane.bytes;
                 }).toList()
-                ,width: imageStream.width,height: imageStream.height,numResults:
-            2,ratio:( imageStream.width / imageStream.height));
+                ,width: imageStream.width,
+                height: imageStream.height
+                ,numResults: 2,
+                ratio:( imageStream.width / imageStream.height));
+          });
+
+          //Lost connection to device. 可能的原因： channel 传输数据过大
+
 //              .then((result){
 //            if("1" == result){
 //              print("${result}");
@@ -137,16 +136,20 @@ class _MyHomePageState extends State<MyHomePage> {
 //
 //            });
 
-            //controller.stopImageStream();
-          }
-
-        });
+          //controller.stopImageStream();
+        }
 
       });
 
-    }on CameraException catch(e){
-      print(e.toString());
-    }
+    });
+
+
+//    try{
+//
+//
+//    }on CameraException catch(e){
+//      print(e.toString());
+//    }
 
   }
 

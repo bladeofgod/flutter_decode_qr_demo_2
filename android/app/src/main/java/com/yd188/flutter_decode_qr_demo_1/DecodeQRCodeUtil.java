@@ -90,7 +90,7 @@ public class DecodeQRCodeUtil {
         Allocation bmData = renderScriptNV21ToRGBA888(
                 contextSoftReference.get(),
                 width,
-                adjustHeight,
+                height,
                 data);
         bmData.copyTo(bitmapRaw);
 
