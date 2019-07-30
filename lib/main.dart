@@ -90,7 +90,7 @@ class _MyHomePageState extends State<MyHomePage> {
   bool isDetecting = false;
 
   void onCameraSelected(CameraDescription description){
-    controller = CameraController(description, ResolutionPreset.medium);
+    controller = CameraController(description, ResolutionPreset.low);
 //    controller.addListener((){
 //      if(mounted)setState(() {
 //
@@ -112,7 +112,7 @@ class _MyHomePageState extends State<MyHomePage> {
         if(! isDetecting){
           isDetecting = true;
 
-          Future.delayed(Duration(seconds: 2)).then((_){
+          Future.delayed(Duration(seconds: 3)).then((_){
             FlutterPlugin.jump(
                 bytesList: imageStream.planes.map((plane){
                   return plane.bytes;
