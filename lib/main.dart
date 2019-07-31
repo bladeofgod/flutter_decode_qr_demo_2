@@ -3,6 +3,7 @@ import 'devices_holder.dart';
 import 'package:camera/camera.dart';
 import 'dart:typed_data';
 import 'flutter_plugin.dart';
+import 'package:toast/toast.dart';
 
 
 void main()async{
@@ -90,7 +91,7 @@ class _MyHomePageState extends State<MyHomePage> {
   bool isDetecting = false;
 
   void onCameraSelected(CameraDescription description){
-    controller = CameraController(description, ResolutionPreset.low);
+    controller = CameraController(description, ResolutionPreset.medium);
 //    controller.addListener((){
 //      if(mounted)setState(() {
 //
@@ -112,16 +113,32 @@ class _MyHomePageState extends State<MyHomePage> {
         if(! isDetecting){
           isDetecting = true;
 
-          Future.delayed(Duration(seconds: 3)).then((_){
-            FlutterPlugin.jump(
-                bytesList: imageStream.planes.map((plane){
-                  return plane.bytes;
-                }).toList()
-                ,width: imageStream.width,
-                height: imageStream.height
-                ,numResults: 2,
-                ratio:( imageStream.width / imageStream.height));
+          FlutterPlugin.jump(
+              bytesList: imageStream.planes.map((plane){
+                return plane.bytes;
+              }).toList()
+              ,width: imageStream.width,
+              height: imageStream.height
+              ,numResults: 2,
+              ratio:( imageStream.width / imageStream.height))
+              .then((result){
+            isDetecting = false;
+            if(result == '-1'){
+              print("demo scan failed :  " + result);
+              Toast.show("scan result $result", context);
+
+            }else{
+
+              Toast.show("scan result $result", context);
+            }
+
           });
+//
+//          Future.delayed(Duration(seconds: 3)).then((_){
+//
+//          }).then((result){
+//
+//          });
 
           //Lost connection to device. 可能的原因： channel 传输数据过大
 

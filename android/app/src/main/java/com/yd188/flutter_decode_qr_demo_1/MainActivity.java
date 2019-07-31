@@ -1,10 +1,20 @@
 package com.yd188.flutter_decode_qr_demo_1;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.widget.Toast;
+
+import com.google.zxing.BinaryBitmap;
+import com.google.zxing.DecodeHintType;
+import com.google.zxing.MultiFormatReader;
+import com.google.zxing.Result;
+import com.google.zxing.common.HybridBinarizer;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import io.flutter.app.FlutterActivity;
 import io.flutter.plugin.common.MethodCall;
@@ -31,18 +41,52 @@ public class MainActivity extends FlutterActivity {
           double threshold = methodCall.argument("threshold");
           boolean asynch = methodCall.argument("asynch");
           double ratio = methodCall.argument("ratio");
-          ImageModel imageModel = new ImageModel(
+          ImageModel model = new ImageModel(
                   bytesList,width,height,ratio,rotation,imageStd,imageMean,numResults,threshold,asynch
           );
-          Intent intent = new Intent(MainActivity.this,NativeActivity.class);
-          Bundle bundle = new Bundle();
-          bundle.putSerializable(ImageModel.class.getSimpleName(),imageModel);
-          intent.putExtra("data",bundle);
+          Bitmap bitmap = DecodeQRCodeUtil.getSingleton(MainActivity.this)
+                  .loadUint8ListData(model.getBytesList(),model.getHeight(),model.getWidth(),model.ratio
+                          ,model.getImageMean(),model.getImageStd(),model.getRotation())
+                  .getBitmapFromList();
 
-          startActivity(intent);
+          String resultStr = decodeNewUtil(bitmap);
+          result.success(resultStr);
+//          Intent intent = new Intent(MainActivity.this,NativeActivity.class);
+//          Bundle bundle = new Bundle();
+//          bundle.putSerializable(ImageModel.class.getSimpleName(),imageModel);
+//          intent.putExtra("data",bundle);
+//
+//          startActivity(intent);
         }
       }
     });
+
+  }
+
+  private String decodeNewUtil(Bitmap bitmap){
+    try {
+
+      // 获取bitmap的宽高，像素矩阵
+      int width = bitmap.getWidth();
+      int height = bitmap.getHeight();
+      int[] pixels = new int[width * height];
+      bitmap.getPixels(pixels, 0, width, 0, 0, width, height);
+
+      // 最新的库中，RGBLuminanceSource 的构造器参数不只是bitmap了
+      RGBLuminanceSource source = new RGBLuminanceSource(bitmap);
+      BinaryBitmap binaryBitmap = new BinaryBitmap(new HybridBinarizer(source));
+      Map<DecodeHintType, Object> hints = new LinkedHashMap<DecodeHintType, Object>();
+      MultiFormatReader reader = new MultiFormatReader();
+      Result result = reader.decode(binaryBitmap, hints);
+      //Toast.makeText(MainActivity.this,result.getText(),Toast.LENGTH_SHORT).show();
+      return result.getText();
+
+    } catch (Exception e) {
+      e.printStackTrace();
+      return  "-1";
+    }
+
+    //return  "-1";
 
   }
 }
